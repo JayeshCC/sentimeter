@@ -1,0 +1,104 @@
+# GitLeaks Configuration File
+# https://github.com/zricethezav/gitleaks
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allowlist for false positives"
+paths = [
+    "security_scan.py",      # Security scanner itself contains patterns
+    "SECURITY_REPORT.md",    # Generated security reports
+    "security_report.json",  # Generated security reports
+    ".gitleaks.toml"         # This configuration file
+]
+
+[[rules]]
+id = "jwt-token"
+description = "JWT tokens"
+regex = '''eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9._-]{10,}\.[A-Za-z0-9._-]{10,}'''
+tags = ["key", "JWT"]
+
+[[rules]]
+id = "github-pat"
+description = "GitHub Personal Access Token"
+regex = '''ghp_[0-9a-zA-Z]{36}'''
+tags = ["key", "GitHub"]
+
+[[rules]]
+id = "github-oauth"
+description = "GitHub OAuth Access Token"
+regex = '''gho_[0-9a-zA-Z]{36}'''
+tags = ["key", "GitHub"]
+
+[[rules]]
+id = "github-app-token"
+description = "GitHub App Token"
+regex = '''(ghu|ghs)_[0-9a-zA-Z]{36}'''
+tags = ["key", "GitHub"]
+
+[[rules]]
+id = "ssh-rsa-private-key"
+description = "SSH RSA private key"
+regex = '''-----BEGIN RSA PRIVATE KEY-----'''
+tags = ["key", "SSH"]
+
+[[rules]]
+id = "ssh-dsa-private-key"
+description = "SSH DSA private key"
+regex = '''-----BEGIN DSA PRIVATE KEY-----'''
+tags = ["key", "SSH"]
+
+[[rules]]
+id = "ssh-ec-private-key"
+description = "SSH EC private key"
+regex = '''-----BEGIN EC PRIVATE KEY-----'''
+tags = ["key", "SSH"]
+
+[[rules]]
+id = "pgp-private-key-block"
+description = "PGP private key block"
+regex = '''-----BEGIN PGP PRIVATE KEY BLOCK-----'''
+tags = ["key", "PGP"]
+
+[[rules]]
+id = "aws-access-token"
+description = "AWS Access Token"
+regex = '''AKIA[0-9A-Z]{16}'''
+tags = ["key", "AWS"]
+
+[[rules]]
+id = "aws-secret-key"
+description = "AWS Secret Key"
+regex = '''aws_secret_access_key\s*=\s*[A-Za-z0-9/+=]{40}'''
+tags = ["key", "AWS"]
+
+[[rules]]
+id = "google-api-key"
+description = "Google API Key"
+regex = '''AIza[0-9A-Za-z\\-_]{35}'''
+tags = ["key", "Google"]
+
+[[rules]]
+id = "slack-token"
+description = "Slack Token"
+regex = '''xox[baprs]-([0-9a-zA-Z]{10,48})?'''
+tags = ["key", "Slack"]
+
+[[rules]]
+id = "discord-api-token"
+description = "Discord API key"
+regex = '''(?i)(discord.{0,20})?['\"][0-9a-f]{64}['\"]'''
+tags = ["key", "Discord"]
+
+[[rules]]
+id = "twilio-api-key"
+description = "Twilio API Key"
+regex = '''SK[0-9a-fA-F]{32}'''
+tags = ["key", "Twilio"]
+
+[[rules]]
+id = "password-in-url"
+description = "Password in URL"
+regex = '''[a-zA-Z]{3,10}://[^/\\s:@]{3,20}:[^/\\s:@]{3,20}@.{1,100}[\"'\\s]'''
+tags = ["key", "URL", "generic"]

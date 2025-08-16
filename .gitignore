@@ -1,0 +1,168 @@
+# Security-focused .gitignore
+
+# Secrets and credentials
+*.key
+*.pem
+*.p12
+*.jks
+*.keystore
+*.crt
+*.cer
+*.der
+*.pfx
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+*.ssh/
+.aws/
+.gcp/
+.azure/
+
+# Environment files
+.env
+.env.*
+!.env.example
+.envrc
+.dotenv
+
+# Configuration files that might contain secrets
+config.json
+secrets.json
+credentials.json
+auth.json
+.secrets
+secrets.yaml
+secrets.yml
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.db3
+
+# Log files that might contain sensitive data
+*.log
+logs/
+log/
+
+# Backup files
+*.bak
+*.backup
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE and editor files
+.vscode/settings.json
+.vscode/launch.json
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# Build artifacts
+dist/
+build/
+target/
+out/
+bin/
+obj/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Package manager files
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ruby
+.bundle/
+vendor/bundle/
+.rvm/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+target/
+.mvn/
+mvnw
+mvnw.cmd
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+vendor/
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+*.auto.tfvars
+
+# Kubernetes
+*.kubeconfig
+kubeconfig
+
+# Security scan results
+security_report.json
+SECURITY_REPORT.md
+*.sarif
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+.temp/
