@@ -24,8 +24,8 @@ jobs:
         echo "📄 Total markdown files: $doc_files"
         
         # Count code blocks in documentation
-        code_blocks=$(grep -r "```" docs/ | wc -l)
-        echo '💻 Code examples: $code_blocks' >> $GITHUB_STEP_SUMMARY
+        code_blocks=$(grep -r '```' docs/ | wc -l)
+        echo "💻 Code examples: $code_blocks" >> $GITHUB_STEP_SUMMARY
         
         # Check for broken internal links
         broken_links=$(grep -r "\[.*\](\./" . | grep -v ".git" | wc -l)
@@ -40,5 +40,5 @@ jobs:
         # Generate summary
         echo "## 📊 Documentation Quality Report" >> $GITHUB_STEP_SUMMARY
         echo "- 📄 Markdown files: $doc_files" >> $GITHUB_STEP_SUMMARY
-        echo '- 💻 Code examples: $code_blocks' >> $GITHUB_STEP_SUMMARY
+        echo "- 💻 Code examples: $code_blocks" >> $GITHUB_STEP_SUMMARY
         echo "- 🔗 Internal links: $broken_links" >> $GITHUB_STEP_SUMMARY
