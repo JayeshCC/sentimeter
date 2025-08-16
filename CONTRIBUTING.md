@@ -382,6 +382,38 @@ Violations may result in:
 
 Report issues to: conduct@sentimeter.com
 
+## 🔒 Security Guidelines
+
+### Security-First Development
+
+When contributing to Sentimeter, please follow these security guidelines:
+
+#### Code Security
+- 🔐 **Never commit secrets** - Use environment variables for sensitive data
+- 🛡️ **Validate all inputs** - Sanitize user input to prevent injection attacks  
+- 🔍 **Review dependencies** - Check for known vulnerabilities before adding new packages
+- 📝 **Follow secure coding practices** - Use linters and security scanners
+
+#### Documentation Security
+- ✅ **Use placeholder values** - Never include real API keys or secrets in examples
+- 🌐 **Recommend HTTPS** - Always show HTTPS examples for production usage
+- 🔗 **Validate links** - Ensure all external links are safe and relevant
+- 📋 **Security examples** - Include security best practices in code samples
+
+#### Reporting Security Issues
+- 🚨 **Use private disclosure** - Report security vulnerabilities privately via security@sentimeter.com
+- 📧 **Don't create public issues** - Security issues should not be disclosed publicly until fixed
+- 🤝 **Collaborate on fixes** - Work with maintainers to develop and test fixes
+
+### Security Review Process
+
+All contributions undergo security review:
+
+1. **Automated scanning** - CodeQL and dependency checks run automatically
+2. **Manual review** - Security-sensitive changes get additional human review  
+3. **Testing** - Security fixes are thoroughly tested before merge
+4. **Documentation** - Security improvements are documented in release notes
+
 ## 🎯 Contribution Ideas
 
 Looking for ways to contribute? Try these:

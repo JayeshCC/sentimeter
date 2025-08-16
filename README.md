@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Status: Active](https://img.shields.io/badge/Status-Active-green.svg)]()
+[![Security: Scanned](https://img.shields.io/badge/Security-Scanned-blue.svg)](./SECURITY.md)
 
 **Sentimeter** is an intelligent sentiment analysis tool that helps you understand the emotional tone and sentiment behind text data. Whether you're analyzing customer feedback, social media posts, or any other text content, Sentimeter provides accurate and insightful sentiment analysis.
 
@@ -33,7 +34,7 @@ cd sentimeter
 # Start the application
 # npm start
 
-# Or use via API
+# Or use via API (development only - use HTTPS in production)
 curl -X POST http://localhost:3000/analyze \
   -H "Content-Type: application/json" \
   -d '{"text": "I love this product!"}'
@@ -95,6 +96,22 @@ Content-Type: application/json
 - **Product Reviews** - Analyze review sentiment automatically
 - **Market Research** - Gauge public opinion
 - **Content Moderation** - Identify negative content
+
+## 🔒 Security
+
+We take security seriously. Please review our [Security Policy](./SECURITY.md) for:
+
+- **Responsible disclosure** of security vulnerabilities
+- **Security best practices** for API usage
+- **Data protection** guidelines
+- **Contact information** for security issues
+
+### Key Security Recommendations:
+- 🔐 Never expose API keys in client-side code
+- 🌐 Always use HTTPS in production
+- 🛡️ Implement proper rate limiting
+- ✅ Validate webhook signatures
+- 📝 Keep dependencies updated
 
 ## 🤝 Contributing
 

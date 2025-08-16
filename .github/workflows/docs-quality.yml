@@ -1,0 +1,342 @@
+name: Documentation Quality
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.md'
+      - '.github/workflows/docs-quality.yml'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  markdown-lint:
+    name: Markdown Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install markdownlint-cli
+      run: npm install -g markdownlint-cli
+
+    - name: Create markdownlint config
+      run: |
+        cat > .markdownlint.json << 'EOF'
+        {
+          "default": true,
+          "MD003": { "style": "atx" },
+          "MD007": { "indent": 2 },
+          "MD013": { "line_length": 120 },
+          "MD024": { "allow_different_nesting": true },
+          "MD033": false,
+          "MD041": false
+        }
+        EOF
+
+    - name: Run markdownlint
+      run: markdownlint "**/*.md" --config .markdownlint.json
+
+  spell-check:
+    name: Spell Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install cspell
+      run: npm install -g cspell
+
+    - name: Create cspell config
+      run: |
+        cat > cspell.json << 'EOF'
+        {
+          "version": "0.2",
+          "language": "en",
+          "words": [
+            "Sentimeter",
+            "sentimeter",
+            "JayeshCC",
+            "webhook",
+            "webhooks",
+            "API",
+            "APIs",
+            "JSON",
+            "cURL",
+            "GitHub",
+            "textarea",
+            "dropdown",
+            "username",
+            "timestamp",
+            "gravatar",
+            "analytics",
+            "preprocessing",
+            "vectorization",
+            "tokenization",
+            "lemmatization",
+            "subjectivity",
+            "realtime",
+            "backend",
+            "frontend",
+            "middleware",
+            "localhost",
+            "axios",
+            "javascript",
+            "python",
+            "nodejs",
+            "npm",
+            "eslint",
+            "prettier",
+            "dockerfile",
+            "kubernetes",
+            "redis",
+            "mongodb",
+            "postgresql",
+            "websocket",
+            "ssl",
+            "tls",
+            "https",
+            "oauth",
+            "jwt",
+            "cors",
+            "csrf",
+            "xss",
+            "sql",
+            "nosql",
+            "api",
+            "rest",
+            "restful",
+            "graphql",
+            "microservice",
+            "microservices",
+            "scalability",
+            "elasticsearch",
+            "kibana",
+            "grafana",
+            "prometheus",
+            "docker",
+            "yaml",
+            "yml",
+            "env",
+            "repo",
+            "changelog",
+            "readme",
+            "gzip",
+            "utf",
+            "uri",
+            "url",
+            "uuid",
+            "ascii",
+            "unicode",
+            "regex",
+            "mailto"
+          ],
+          "flagWords": [],
+          "ignorePaths": [
+            "node_modules/**",
+            ".git/**",
+            "*.min.*"
+          ]
+        }
+        EOF
+
+    - name: Run spell check
+      run: cspell "**/*.md"
+
+  link-check:
+    name: Link Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install markdown-link-check
+      run: npm install -g markdown-link-check
+
+    - name: Create link check config
+      run: |
+        cat > .markdown-link-check.json << 'EOF'
+        {
+          "ignorePatterns": [
+            {
+              "pattern": "^http://localhost"
+            },
+            {
+              "pattern": "^http://127.0.0.1"
+            }
+          ],
+          "replacementPatterns": [],
+          "httpHeaders": [
+            {
+              "urls": ["https://github.com/"],
+              "headers": {
+                "Accept": "text/html"
+              }
+            }
+          ],
+          "timeout": "20s",
+          "retryOn429": true,
+          "retryCount": 3,
+          "fallbackRetryDelay": "30s",
+          "aliveStatusCodes": [200, 206]
+        }
+        EOF
+
+    - name: Check links in documentation
+      run: |
+        echo "Checking links in markdown files..."
+        find . -name "*.md" -not -path "./node_modules/*" -exec markdown-link-check --config .markdown-link-check.json {} \;
+
+  docs-structure:
+    name: Documentation Structure Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Validate required documentation files
+      run: |
+        echo "Checking for required documentation files..."
+        
+        required_files=(
+          "README.md"
+          "LICENSE"
+          "CONTRIBUTING.md"
+          "SECURITY.md"
+        )
+        
+        missing_files=()
+        
+        for file in "${required_files[@]}"; do
+          if [ ! -f "$file" ]; then
+            missing_files+=("$file")
+          else
+            echo "✅ $file exists"
+          fi
+        done
+        
+        if [ ${#missing_files[@]} -ne 0 ]; then
+          echo "❌ Missing required files: ${missing_files[*]}"
+          exit 1
+        else
+          echo "✅ All required documentation files exist"
+        fi
+
+    - name: Validate README structure
+      run: |
+        echo "Validating README.md structure..."
+        
+        required_sections=(
+          "# "
+          "## "
+          "Features"
+          "Quick Start"
+          "Installation"
+          "Usage"
+          "Contributing"
+          "License"
+        )
+        
+        missing_sections=()
+        
+        for section in "${required_sections[@]}"; do
+          if ! grep -q "$section" README.md; then
+            missing_sections+=("$section")
+          fi
+        done
+        
+        if [ ${#missing_sections[@]} -ne 0 ]; then
+          echo "❌ README.md missing recommended sections: ${missing_sections[*]}"
+          echo "ℹ️  This is a warning, not a failure"
+        else
+          echo "✅ README.md has good structure"
+        fi
+
+  docs-metrics:
+    name: Documentation Metrics
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Calculate documentation metrics
+      run: |
+        echo "## 📊 Documentation Metrics" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Count files
+        md_files=$(find . -name "*.md" -not -path "./node_modules/*" | wc -l)
+        echo "📄 Markdown files: $md_files" >> $GITHUB_STEP_SUMMARY
+        
+        # Count words
+        total_words=$(find . -name "*.md" -not -path "./node_modules/*" -exec wc -w {} \; | awk '{sum += $1} END {print sum}')
+        echo "📝 Total words: $total_words" >> $GITHUB_STEP_SUMMARY
+        
+        # Count lines
+        total_lines=$(find . -name "*.md" -not -path "./node_modules/*" -exec wc -l {} \; | awk '{sum += $1} END {print sum}')
+        echo "📏 Total lines: $total_lines" >> $GITHUB_STEP_SUMMARY
+        
+        # Check for code examples
+        code_blocks=$(grep -r "```" --include="*.md" . | wc -l)
+        code_blocks=$((code_blocks / 2))  # Each code block has opening and closing
+        echo "💻 Code examples: $code_blocks" >> $GITHUB_STEP_SUMMARY
+
+  docs-summary:
+    name: Documentation Quality Summary
+    runs-on: ubuntu-latest
+    needs: [markdown-lint, spell-check, link-check, docs-structure, docs-metrics]
+    if: always()
+    
+    steps:
+    - name: Documentation quality summary
+      run: |
+        echo "## 📚 Documentation Quality Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ needs.markdown-lint.result }}" == "success" ]; then
+          echo "✅ Markdown Linting: Passed" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ Markdown Linting: Failed" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ "${{ needs.spell-check.result }}" == "success" ]; then
+          echo "✅ Spell Check: Passed" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ Spell Check: Failed" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ "${{ needs.link-check.result }}" == "success" ]; then
+          echo "✅ Link Validation: Passed" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ Link Validation: Failed" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ "${{ needs.docs-structure.result }}" == "success" ]; then
+          echo "✅ Documentation Structure: Passed" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ Documentation Structure: Failed" >> $GITHUB_STEP_SUMMARY
+        fi
