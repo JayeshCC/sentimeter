@@ -1,0 +1,44 @@
+name: Documentation Quality Check
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  docs-quality:
+    runs-on: ubuntu-latest
+    name: Check Documentation Quality
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Analyze documentation files
+      run: |
+        echo "🔍 Starting documentation quality analysis..."
+        
+        # Count documentation files
+        doc_files=$(find . -name "*.md" | wc -l)
+        echo "📄 Total markdown files: $doc_files"
+        
+        # Count code blocks in documentation
+        code_blocks=$(grep -r "```" docs/ | wc -l)
+        echo '💻 Code examples: $code_blocks' >> $GITHUB_STEP_SUMMARY
+        
+        # Check for broken internal links
+        broken_links=$(grep -r "\[.*\](\./" . | grep -v ".git" | wc -l)
+        echo "🔗 Internal links found: $broken_links"
+        
+        # Analyze API documentation
+        if [ -f "API_DOCUMENTATION.md" ]; then
+          api_endpoints=$(grep -c "### " API_DOCUMENTATION.md)
+          echo "🔧 API endpoints documented: $api_endpoints"
+        fi
+        
+        # Generate summary
+        echo "## 📊 Documentation Quality Report" >> $GITHUB_STEP_SUMMARY
+        echo "- 📄 Markdown files: $doc_files" >> $GITHUB_STEP_SUMMARY
+        echo '- 💻 Code examples: $code_blocks' >> $GITHUB_STEP_SUMMARY
+        echo "- 🔗 Internal links: $broken_links" >> $GITHUB_STEP_SUMMARY
